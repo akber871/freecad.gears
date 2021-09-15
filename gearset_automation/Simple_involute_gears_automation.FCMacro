@@ -1,0 +1,117 @@
+"""involute_gearset.FCMacro
+
+   Paramateric gear generation and automation via python script using external workbench by loo.
+   source code for the workbench: https://github.com/looooo/freecad.gears.
+   This script can be used to automate the generation of simple involute gear by altering the parameters.
+
+"""
+
+import FreeCAD
+import Part
+import freecad.gears.commands as fcgear
+from FreeCAD import Vector
+from FreeCAD import Base
+import math
+
+DOC = FreeCAD.newDocument()
+DOC_NAME = "Gears"
+
+
+def clear_doc():
+    """
+    Clear the active document deleting all the objects
+    """
+    for obj in DOC.Objects:
+        DOC.removeObject(obj.Name)
+
+
+def setview():
+    """Rearrange View"""
+    FreeCAD.Gui.SendMsgToActiveView("ViewFit")
+    FreeCAD.Gui.activeDocument().activeView().viewAxometric()
+
+if DOC is None:
+    FreeCAD.newDocument(DOC_NAME)
+    FreeCAD.setActiveDocument(DOC_NAME)
+    DOC = FreeCAD.activeDocument()
+
+else:
+
+    clear_doc()
+
+# EPS= tolerance to use to cut the parts
+EPS = 0.10
+EPS_C = EPS * -0.5
+
+def involuteGear(teeth, beta, height, module, placementX, placementY, placementZ, rot_angle):
+    """
+    Generate a simple cylindrical involute gear based on the provided gear parameters.
+    """
+    gear = fcgear.CreateInvoluteGear.create()    
+    gear.teeth = teeth
+    gear.beta = beta
+    gear.height = height
+    gear.module = module
+    gear.double_helix = False
+
+    gear_height = gear.height
+    gear_radius = (teeth * module)/2
+
+    DOC.recompute()
+
+    return gear, gear_radius, gear_height
+
+
+def main():
+
+	# gear parameters
+	teeth = [15, 30]    # Number of teeth
+	beta = [0, 20]        # Spur gear = 0 degree, Helical = 20 degree
+	height = [2, 5]      # gear height, mm
+	module = 0.3        # Gear module size, default, 1mm
+	
+	# placement variables
+	placementX = 0
+	placementY = 0
+	placementZ = 0
+	rot_angle = 0
+	
+	i = 1
+	
+	# Looping throught the parameters to generate a gear set
+	# Rotations are only flat or upright so that the gear rests on the ground properly
+	for h in height: 
+	    for t in teeth:
+	        for b in beta:
+	            g1, gear_radius, gear_height = involuteGear(t, b, h, module, placementX, placementY, placementZ, rot_angle)
+	
+	            rot = FreeCAD.Rotation(FreeCAD.Vector(1,0,0), rot_angle)               # rotation about an axis 
+	            centre = FreeCAD.Vector(placementX, placementY, placementZ)   # central point of gear
+	            pos = g1.Placement.Base                                                                                # position point of gear
+	            newplace = FreeCAD.Placement(pos,rot,centre)                                    # make a new Placement object
+	            g1.Placement = newplace                                                                               # spin the gear
+	                                                                       
+	            if rot_angle in [90, 270, 450, 630]:
+	                g1.Placement.Base = (placementX, placementY,  gear_radius)
+	            elif rot_angle in [180, 540]: 
+	                g1.Placement.Base = (placementX, placementY,  gear_height)
+	            else:
+	                g1.Placement.Base = (placementX, placementY,  0)
+	
+	            gear = g1.Shape
+	
+	            if b == 0:   #if no helical angle
+	                gear.exportStl("/home/akber/gearsets/new_gearset/Gear_Spur_"+ str(t)+"Teeth_"+str(h)+"mm.stl")
+	            else:
+	                gear.exportStl("/home/akber/gearsets/new_gearset/Gear_Helical_"+ str(t)+"Teeth_"+str(h)+"mm.stl")
+	
+	            i += 1                                                                        
+	
+	            placementX += 7
+	            placementY += 7
+	            rot_angle += 90
+	
+	setview()
+
+if __name__ == "__main__":
+    main()
