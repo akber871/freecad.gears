@@ -1,5 +1,6 @@
 """
 Script to generate Spur and Helical gears in FreeCAD using gear module from https://github.com/looooo/freecad.gears
+This gear can be used as an external workbench in FreeCAD to automate gear generation.
 
 """
 
