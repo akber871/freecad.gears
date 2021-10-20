@@ -48,7 +48,7 @@ def involuteGear(teeth, helix_angle, height, module):
 	"""
 	
 	body = DOC.addObject('PartDesign::Body','Body')
-	gear = fcgear.CreateInvoluteGear.create()       # Gear module from external workbench
+	gear = fcgear.CreateInvoluteGear.create()       # Gear module from https://github.com/looooo/freecad.gears
 	gear.teeth = teeth
 	gear.beta = helix_angle
 	gear.height = height
@@ -101,10 +101,10 @@ def involuteGear(teeth, helix_angle, height, module):
 def main():
 
 	# gear parameters 
-	teeth = [12, 30]     # Number of teeth
-	helix_angle = [0, 20]         # Spur gear = 0 degree, Helical = 20 degree
+	teeth = [12, 30]           # Number of teeth
+	helix_angle = [0, 20]      # Spur gear = 0 degree, Helical = 20 degree
 	height = [	20, 60]        # gear height
-	module = 3.5        # Gear module size, default
+	module = 3.5               # Gear module size, default
 	
 	# placement variables - Each gears will be rotated at the origin for creating different pose
 	placementX = 0
@@ -121,11 +121,11 @@ def main():
 			for b in helix_angle:
 				gear, gear_radius, shaft_height = involuteGear(t, b, h, module)
 				
-				rot = FreeCAD.Rotation(FreeCAD.Vector(1,0,0), rot_angle)                  # rotation about an axis 
+				rot = FreeCAD.Rotation(FreeCAD.Vector(1,0,0), rot_angle)          # rotation about an axis 
 				centre = FreeCAD.Vector(placementX, placementY, placementZ)       # central point of gear
-				pos = gear.Placement.Base                                                                                # position point of gear
-				newplace = FreeCAD.Placement(pos,rot,centre)                                        # make a new Placement object
-				gear.Placement = newplace                                                                               # spin the gear
+				pos = gear.Placement.Base                                         # position point of gear
+				newplace = FreeCAD.Placement(pos,rot,centre)                      # make a new Placement object
+				gear.Placement = newplace                                         # spin the gear
 				                                                           
 				if rot_angle in [90, 270, 450, 630]:
 					gear.Placement.Base = (placementX, placementY,  gear_radius)
