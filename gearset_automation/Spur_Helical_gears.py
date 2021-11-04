@@ -10,6 +10,7 @@ import freecad.gears.commands as fcgear
 from FreeCAD import Vector
 from FreeCAD import Base
 import math
+from datetime import datetime
 #import Import
 
 DOC = FreeCAD.newDocument()
@@ -119,6 +120,8 @@ def main():
 	for h in height: 
 		for t in teeth:
 			for b in helix_angle:
+				startdatetime = datetime.now()
+
 				gear, gear_radius, shaft_height = involuteGear(t, b, h, module)
 				
 				rot = FreeCAD.Rotation(FreeCAD.Vector(1,0,0), rot_angle)          # rotation about an axis 
@@ -135,6 +138,7 @@ def main():
 					gear.Placement.Base = (placementX, placementY,  0)
 				
 				#gear = gear.Shape
+				fcad_time = datetime.now()
 				
 				if b == 0:  
 					gear.exportStep("/home/akber/gearsets/new_gearset/stp_files/Gear_Spur_"+ str(t)+"Teeth_"+str(h)+"mm.stp")         # Spur gears 
@@ -143,6 +147,17 @@ def main():
 					gear.exportStep("/home/akber/gearsets/new_gearset/stp_files/Gear_Helical_"+ str(t)+"Teeth_"+str(h)+"mm.stp")     # Helical gears
 					#gear.exportStl("/home/akber/gearsets/new_gearset/stl_files/Gear_Helical_"+ str(t)+"Teeth_"+str(h)+"mm.stl")
 				
+				mesh_time = datetime.now()
+
+				fcad_elapsed_time = fcad_time - startdatetime
+				mesh_elapsed_time = mesh_time - fcad_time
+				total_time = mesh_time - startdatetime
+
+				print ('Model ', i, ' time: ' + str(fcad_elapsed_time))
+				print ('mesh ', i, ' time: ' + str(mesh_elapsed_time))
+				print ('total time: ' + str(total_time))
+				print('*************************************')    # for readibility
+
 				i += 1                                                                        
 				
 				#placementX += 20
