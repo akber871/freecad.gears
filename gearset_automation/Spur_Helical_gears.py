@@ -147,15 +147,15 @@ def main():
 					gear.exportStep("/home/akber/gearsets/new_gearset/stp_files/Gear_Helical_"+ str(t)+"Teeth_"+str(h)+"mm.stp")     # Helical gears
 					#gear.exportStl("/home/akber/gearsets/new_gearset/stl_files/Gear_Helical_"+ str(t)+"Teeth_"+str(h)+"mm.stl")
 				
-				mesh_time = datetime.now()
+				export_time = datetime.now()
 
 				fcad_elapsed_time = fcad_time - startdatetime
-				mesh_elapsed_time = mesh_time - fcad_time
-				total_time = mesh_time - startdatetime
+				export_elapsed_time = export_time - fcad_time
+				total_time = export_time - startdatetime
 
-				print ('Model ', i, ' time: ' + str(fcad_elapsed_time))
-				print ('mesh ', i, ' time: ' + str(mesh_elapsed_time))
-				print ('total time: ' + str(total_time))
+				print ('Model ', i, ' generation time: ' + str(fcad_elapsed_time))
+				print ('Model ', i, ' export time: ' + str(export_elapsed_time))
+				print ('Total elapsed time (modeling + export): ' + str(total_time))
 				print('*************************************')    # for readibility
 
 				i += 1                                                                        
