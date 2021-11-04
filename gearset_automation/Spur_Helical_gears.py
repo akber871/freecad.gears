@@ -104,7 +104,7 @@ def main():
 	# gear parameters 
 	teeth = [12, 30]           # Number of teeth
 	helix_angle = [0, 20]      # Spur gear = 0 degree, Helical = 20 degree
-	height = [	20, 60]        # gear height
+	height = [20, 60]          # gear height
 	module = 3.5               # Gear module size, default
 	
 	# placement variables - Each gears will be rotated at the origin for creating different pose
